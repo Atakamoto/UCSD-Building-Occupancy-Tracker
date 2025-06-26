@@ -8,8 +8,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 st.set_page_config(page_title="WaitzViz", layout="wide")
 
 # Load credentials
-with open("google_creds.json") as f:
-    creds_dict = json.load(f)
+creds_dict = st.secrets["GOOGLE_CREDENTIALS"]
+
 
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
