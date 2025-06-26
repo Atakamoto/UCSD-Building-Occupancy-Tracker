@@ -15,7 +15,7 @@ scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 
-# Google Sheet info
+# Google Sheet information
 SHEET_ID = "1VHi6DhFyQmOy3MBq0YvYpRQRechfFyThzcrF2Xt0-cs"
 SHEET_NAME = "Waitz Data"
 
