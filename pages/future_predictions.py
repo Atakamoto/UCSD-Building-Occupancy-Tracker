@@ -59,14 +59,17 @@ fdf["OnBreakFlag"] = fdf["Timestamp"].apply(is_break).astype(int)
 # 7) Predict
 X_future      = fdf[features]
 fdf["Forecast"] = model.predict(X_future)
+fdf["Forecast"] = fdf["Forecast"].clip(lower=0, upper=1)
 
 # 8) Combine history & forecast (now unique per loc)
 hist = df_loc.set_index("Timestamp")["Busyness"].rename("Actual")
 fore = fdf.set_index("Timestamp")["Forecast"]
 combined = pd.concat([hist, fore], axis=1)
 
-# 9) Plot
+st.subheader(f"Historical Busyness for {selected} (last 7 days)")
+st.line_chart(hist.last("7D"))
+
 st.subheader(f"24-Hour Forecast for {selected}")
-st.line_chart(combined)
+st.line_chart(fore.to_frame())
 
 
