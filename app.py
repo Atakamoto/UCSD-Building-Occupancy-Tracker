@@ -21,12 +21,12 @@ df_loc = df[df["Name"] == selected]
 if mode == "Daily":
     # group by date
     df_loc["Date"] = df_loc["Timestamp"].dt.date
-    series = df_loc.groupby("Date")["Busyness (%)"].mean()
+    series = df_loc.groupby("Date")["Busyness"].mean()
     st.line_chart(series)
 else:
     # extract hour
     df_loc["Hour"] = df_loc["Timestamp"].dt.hour
-    series = df_loc.groupby("Hour")["Busyness (%)"].mean()
+    series = df_loc.groupby("Hour")["Busyness"].mean()
     st.line_chart(series)
 
 st.write(f"*Showing {mode.lower()} average busyness for {selected}*")
