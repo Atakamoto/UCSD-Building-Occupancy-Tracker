@@ -1,3 +1,7 @@
+"""
+# Future Predictions
+"""
+
 # pages/future_predictions.py
 import streamlit as st
 import pandas as pd

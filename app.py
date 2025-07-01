@@ -1,3 +1,7 @@
+"""
+# UCSD Waitz Live Busyness Dashboard
+"""
+
 # app.py
 import streamlit as st
 import pandas as pd
