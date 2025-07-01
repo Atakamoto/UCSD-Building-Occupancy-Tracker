@@ -1,43 +1,34 @@
+# app.py
 import streamlit as st
 import pandas as pd
-import gspread
-import json
-from oauth2client.service_account import ServiceAccountCredentials
+from utils import load_waitz_sheet
 
-# Set page config
-st.set_page_config(page_title="WaitzViz", layout="wide")
+st.set_page_config(page_title="UCSD Occupancy — Past Data")
 
-# Load credentials
-creds_dict = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
+st.title("Past Occupancy Data")
 
+# load data once, cached
+df = load_waitz_sheet()
 
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-client = gspread.authorize(creds)
+# sidebar controls
+mode = st.sidebar.radio("Granularity", ["Daily", "Hourly"])
+locs = sorted(df["Name"].unique())
+selected = st.sidebar.selectbox("Location", locs)
 
-# Google Sheet information
-SHEET_ID = "1VHi6DhFyQmOy3MBq0YvYpRQRechfFyThzcrF2Xt0-cs"
-SHEET_NAME = "Waitz Data"
+# filter by location
+df_loc = df[df["Name"] == selected]
 
-@st.cache_data(ttl=1800)
-def load_data():
-    sheet = client.open_by_key(SHEET_ID).worksheet(SHEET_NAME)
-    data = sheet.get_all_records()
-    return pd.DataFrame(data)
-
-df = load_data()
-
-st.title("📊 UCSD Waitz Live Busyness Dashboard")
-
-if df.empty:
-    st.warning("No data found.")
+if mode == "Daily":
+    # group by date
+    df_loc["Date"] = df_loc["Timestamp"].dt.date
+    series = df_loc.groupby("Date")["Busyness (%)"].mean()
+    st.line_chart(series)
 else:
-    st.write("Showing recent Waitz data from Google Sheets:")
-    st.dataframe(df)
-    st.write("DataFrame columns:", df.columns.tolist())
-    st.dataframe(df.head())  # Optional: show a preview of the data
-    st.subheader("Busyness Over Time")
-    selected = st.selectbox("Choose a location:", sorted(df["Name"].unique()))
-    location_df = df[df["Name"] == selected]
+    # extract hour
+    df_loc["Hour"] = df_loc["Timestamp"].dt.hour
+    series = df_loc.groupby("Hour")["Busyness (%)"].mean()
+    st.line_chart(series)
 
-    st.line_chart(location_df.set_index("Timestamp")["Busyness"])
+st.write(f"*Showing {mode.lower()} average busyness for {selected}*")
+
+
