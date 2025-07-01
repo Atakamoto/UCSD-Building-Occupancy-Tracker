@@ -28,14 +28,6 @@ df["Timestamp"] = pd.to_datetime(df["Timestamp"])
 df["On Break"]   = df["Timestamp"].apply(is_break)        # True/False
 df["Session"]    = df["On Break"].map({True: "Break", False: "In-Session"})
 
-# hour of day, day of week, and break flag (True/False → 1/0)
-df["Hour"]        = df["Timestamp"].dt.hour
-df["Weekday"]     = df["Timestamp"].dt.weekday   # 0=Mon … 6=Sun
-df["OnBreakFlag"] = df["On Break"].astype(int)
-df = pd.get_dummies(df, columns=["Name"], drop_first=True)
-# target = your occupancy percentage
-y = df["Busyness"]
-
 # sidebar controls
 mode = st.sidebar.radio("Granularity", ["Daily", "Hourly"])
 locs = sorted(df["Name"].unique())
