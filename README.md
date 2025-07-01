@@ -1,15 +1,26 @@
-# Waitz Data Scraper (for UCSD Building Availability Information)
+# Waitz Data Scraper (UCSD Building Occupancy Tracker)
 
-This project retrieves real-time occupancy data from the **Waitz API** which contains information about how crowded places like Geisel Library and RIMAC are and uploads it to **Google Sheets** using an AWS Lambda function. The script extracts location names, occupancy percentages, and open/closed status while also recording timestamps for tracking trends over time.
+A pipeline for collecting and visualizing real-time crowd-level data at UCSD campus locations.
+
+📊 **Live Demo:** [https://ucsd-building-occupancy-tracker.streamlit.app](https://ucsd-building-occupancy-tracker.streamlit.app)
+
+---
+
+## Overview
+
+This project:
+
+1. **Fetches** occupancy data from the Waitz API (e.g. Geisel Library, RIMAC Gym).  
+2. **Parses** out each location’s name, crowding percentage, open/closed status, and timestamp.  
+3. **Stores** results in Google Sheets via a service-account.  
+4. **Runs** on a schedule using AWS Lambda (no servers to manage).  
+5. **Visualizes** historical trends in a Streamlit dashboard.
+
+---
 
 ## Features
 
-- **Extracts real-time occupancy data** from the Waitz API.
-- **Formats the data** with location names, occupancy percentages, and open status.
-- **Uploads data to Google Sheets** via the Google Sheets API.
-- **Runs automatically** using AWS Lambda.
-
-## Future Plans
-
-- **Create visualizations based on data once enough is collected**
-- **Work on live updating calendar or visuals for website**
+- **Automated scraping** every 30 minutes with AWS Lambda & CloudWatch (or Cron).  
+- **Google Sheets integration** for free, persistent storage.  
+- **Timestamped records** for trend analysis.  
+- **Streamlit app** for interactive filtering and charting of past data.
